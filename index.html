@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mayank Labs | Neural Core v4.4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0A1211; 
+            --glass: rgba(10, 18, 17, 0.9); 
+            --border: rgba(255, 255, 255, 0.15);
+            --accent-cyan: #26F5F5; 
+            --user-bubble: #1F302F; 
+            --ai-bubble: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top right, #1F302F, var(--bg-dark));
+            background-attachment: fixed;
+            color: #e2e8f0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Keeps the main page static */
+        }
+
+        .glass-container {
+            width: 95vw; height: 90vh; max-width: 1200px;
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden; /* Clips children to the rounded corners */
+        }
+
+        /* Sidebar Styling */
+        aside { padding: 2rem; border-right: 1px solid var(--border); background: rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 2rem;}
+        .brand h1 { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; background: linear-gradient(to right, #ffffff, var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        select { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; color: white; outline: none; cursor: pointer; }
+
+        /* Chat Display (SCROLL FIX HERE) */
+        main { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+        
+        #chat-display { 
+            flex: 1; 
+            padding: 2rem; 
+            overflow-y: auto; /* ENABLES SCROLLING */
+            display: flex; 
+            flex-direction: column; 
+            gap: 1.5rem; 
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-cyan) transparent;
+        }
+
+        /* Custom Cyan Scrollbar */
+        #chat-display::-webkit-scrollbar { width: 6px; }
+        #chat-display::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 10px; box-shadow: 0 0 10px var(--accent-cyan); }
+
+        /* Bubble Styling */
+        .bubble { max-width: 85%; padding: 1.2rem; border-radius: 18px; line-height: 1.6; animation: fadeIn 0.3s ease; word-wrap: break-word; }
+        .user { align-self: flex-end; background: var(--accent-cyan); color: #000; font-weight: 600; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(38, 245, 245, 0.3); }
+        .ai { align-self: flex-start; background: var(--ai-bubble); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+
+        pre { background: #000 !important; padding: 1rem; border-radius: 10px; overflow-x: auto; border: 1px solid var(--accent-cyan); margin: 10px 0; font-family: 'Courier New', monospace; }
+
+        /* Input Wrapper */
+        .input-wrapper { padding: 1.5rem 2rem; background: rgba(0,0,0,0.3); display: flex; gap: 12px; border-top: 1px solid var(--border); }
+        input { flex: 1; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 14px; color: white; outline: none; }
+        button { padding: 0 24px; background: var(--accent-cyan); border: none; border-radius: 14px; color: #000; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 0 15px var(--accent-cyan); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .status-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    </style>
+</head>
+<body>
+
+    <div class="glass-container">
+        <aside>
+            <div class="brand"><h1>MAYANK LABS</h1><p style="font-size: 0.7rem; color: #64748b;">Neural Core v4.4</p></div>
+            <div>
+                <label style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase;">Mood Matrix</label>
+                <select id="mood-select">
+                    <option value="angry">Aggressive 😡</option>
+                    <option value="funny" selected>Sarcastic 😂</option>
+                    <option value="sad">Melancholic 😭</option>
+                </select>
+            </div>
+            <div style="margin-top: auto;">
+                <p style="font-size: 0.75rem; color: #94a3b8;"><span class="status-dot"></span> Uplink Active</p>
+            </div>
+        </aside>
+
+        <main>
+            <header style="padding: 1rem 2rem; border-bottom: 1px solid var(--border); font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between;">
+                <div>SIGNAL ANALYZER</div>
+                <div>Location: Bhilai, IN</div>
+            </header>
+            
+            <div id="chat-display">
+                <div class="bubble ai">Neural interface v4.4 operational. Ready for signal injection.</div>
+            </div>
+
+            <div class="input-wrapper">
+                <input type="text" id="user-input" placeholder="Inject signal into core..." autocomplete="off">
+                <button onclick="sendSignal()">INJECT</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const chatDisplay = document.getElementById('chat-display');
+        const userInput = document.getElementById('user-input');
+        const moodSelect = document.getElementById('mood-select');
+        let history = [];
+
+        async function sendSignal() {
+            const text = userInput.value.trim();
+            if(!text) return;
+
+            appendBubble('user', text);
+            history.push({role: 'user', content: text});
+            userInput.value = '';
+
+            const aiId = appendBubble('ai', 'Scanning neural pathways...');
+
+            try {
+                const res = await fetch('http://localhost:8000/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ mode: moodSelect.value, messages: history })
+                });
+                const data = await res.json();
+                
+                document.getElementById(aiId).innerText = data.content;
+                history.push({role: 'assistant', content: data.content});
+                
+                // AUTO-SCROLL TO BOTTOM
+                chatDisplay.scrollTo({ top: chatDisplay.scrollHeight, behavior: 'smooth' });
+            } catch (e) {
+                document.getElementById(aiId).innerText = "OFFLINE: Ensure FastAPI is running on Port 8000.";
+                document.getElementById(aiId).style.color = "#ef4444";
+            }
+        }
+
+        function appendBubble(role, content) {
+            const id = 'msg-' + Date.now();
+            const div = document.createElement('div');
+            div.className = `bubble ${role}`;
+            div.id = id;
+            div.innerText = content;
+            chatDisplay.appendChild(div);
+            
+            // IMMEDIATE SCROLL ON NEW MESSAGE
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+            return id;
+        }
+
+        userInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendSignal(); });
+    </script>
+</body>
+</html>
