@@ -13,17 +13,6 @@ load_dotenv()
 current_dir = os.path.dirname(os.path.abspath(__file__))
 logo_path = os.path.join(current_dir, "mayank-labs.png")
 
-# Load the .env file if it exists (Local)
-if os.path.exists(".env"):
-    load_dotenv()
-
-# Get the key (Works for both Local .env and Streamlit Cloud Secrets)
-api_key = os.getenv("MISTRAL_API_KEY")
-
-if not api_key:
-    st.error("MISTRAL_API_KEY not found! Set it in your .env or Streamlit Secrets.")
-    st.stop()
-
 # --- THEMES & STYLING ---
 def local_css():
     st.markdown("""
